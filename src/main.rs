@@ -1,13 +1,6 @@
-use pest::Parser;
-use pest_derive::Parser;
+mod parser;
+mod semantics;
 
-#[derive(Parser)]
-#[grammar = "shell.pest"]
-struct ShellParser;
-
-
-fn main()  {
-    ShellParser::parse(Rule::complete_command, "echo 222")
-        .expect("22")
-        .next().unwrap();
+fn main() {
+    let shell_ast = parser::generate_shell_ast("echo 22");    
 }
