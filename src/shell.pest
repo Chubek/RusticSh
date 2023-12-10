@@ -43,12 +43,12 @@ In = { "in" }
 // Grammar rules
 complete_command = { list ~ separator? | list }
 list = { list_prefix ~ separator_op ~ and_or | and_or }
-list_prefix = { and_or }
+list_prefix = { and_or ~ list_prefix }
 and_or = { pipeline | and_or_prefix ~ AND_IF ~ linebreak ~ pipeline | and_or_prefix ~ OR_IF ~ linebreak ~ pipeline }
 and_or_prefix = { pipeline }
 pipeline = { command | pipe_sequence | Bang ~ pipe_sequence }
-pipe_sequence = { command | pipe_sequence_prefix ~ "|" ~ linebreak ~ command }
-pipe_sequence_prefix = { command }
+pipe_sequence = { pipe_sequence_prefix ~ "|" ~ linebreak ~ command }
+pipe_sequence_prefix = { command ~ pipe_sequence_prefix }
 
 command = { simple_command | compound_command | compound_command ~ redirect_list | function_definition }
 compound_command = { brace_group | subshell | for_clause | case_clause | if_clause | while_clause | until_clause }
@@ -56,13 +56,13 @@ subshell = { "(" ~ compound_list ~ ")" }
 compound_list = { term | newline_list ~ term | term ~ separator | newline_list ~ term ~ separator }
 
 term = { term_prefix ~ separator ~ and_or | and_or }
-term_prefix = { and_or }
+term_prefix = { and_or ~ term_prefix }
 for_clause = { For ~ name ~ linebreak ~ do_group | For ~ name ~ linebreak ~ in ~ sequential_sep ~ do_group | For ~ name ~ linebreak ~ in ~ wordlist ~ sequential_sep ~ do_group }
 name = { NAME }
 
 in = { In }
 wordlist = { wordlist_prefix ~ WORD | WORD }
-wordlist_prefix = { WORD }
+wordlist_prefix = { WORD ~ wordlist_prefix }
 case_clause = { Case ~ WORD ~ linebreak ~ in ~ linebreak ~ case_list ~ Esac | Case ~ WORD ~ linebreak ~ in ~ linebreak ~ case_list_ns ~ Esac | Case ~ WORD ~ linebreak ~ in ~ linebreak ~ Esac }
 
 case_list_ns = { case_list ~ case_item_ns | case_item_ns }
@@ -71,7 +71,7 @@ case_list_prefix = { case_item_ns }
 case_item_ns = { pattern ~ ")" ~ linebreak | pattern ~ ")" ~ compound_list ~ linebreak | "(" ~ pattern ~ ")" ~ linebreak | "(" ~ pattern ~ ")" ~ compound_list ~ linebreak }
 
 case_item = { pattern ~ ")" ~ linebreak ~ DSEMI ~ linebreak | pattern ~ ")" ~ compound_list ~ DSEMI ~ linebreak | "(" ~ pattern ~ ")" ~ linebreak ~ DSEMI ~ linebreak | "(" ~ pattern ~ ")" ~ compound_list ~ DSEMI ~ linebreak }
-
+ 
 pattern = { WORD | pattern_prefix }
 pattern_prefix = { "|" ~ WORD ~ pattern_prefix }
 
